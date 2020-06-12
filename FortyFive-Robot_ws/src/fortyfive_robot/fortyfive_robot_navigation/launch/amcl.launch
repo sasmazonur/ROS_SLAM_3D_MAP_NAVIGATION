@@ -1,0 +1,62 @@
+<!-- amcl is a probabilistic localization system for a robot moving in 2D.
+It implements the adaptive (or KLD-sampling) Monte Carlo localization approach
+, which uses a particle filter to track the pose of a robot against a known map. -->
+<!-- More detailed information can be foun http://wiki.ros.org/amcl -->
+<launch>
+  <!-- Arguments -->
+  <arg name="scan_topic"     default="scan"/>
+  <!-- x-plane val for Gaussian distribution in initial pose estimation -->
+  <arg name="initial_pose_x" default="0.0"/>
+  <!-- x-plane val for Gaussian distribution in initial pose estimation -->
+  <arg name="initial_pose_y" default="0.0"/>
+  <arg name="initial_pose_a" default="0.0"/>
+
+  <!-- execute amcl -->
+  <!-- AMCL -->
+  <node pkg="amcl" type="amcl" name="amcl">
+    <!-- minimum number of particles allowed -->
+    <param name="min_particles"             value="500"/>
+    <!-- maximum number of particles allowed -->
+    <param name="max_particles"             value="3000"/>
+     <!-- max error between the actual and estimated distribution -->
+    <param name="kld_err"                   value="0.02"/>
+    <!-- translation motion filter in meter -->
+    <param name="update_min_d"              value="0.20"/>
+    <!-- rotational motion filter in meter -->
+    <param name="update_min_a"              value="0.20"/>
+    <param name="resample_interval"         value="1"/>
+    <param name="transform_tolerance"       value="0.5"/>
+    <param name="recovery_alpha_slow"       value="0.00"/>
+    <param name="recovery_alpha_fast"       value="0.00"/>
+    <param name="initial_pose_x"            value="$(arg initial_pose_x)"/>
+    <param name="initial_pose_y"            value="$(arg initial_pose_y)"/>
+    <param name="initial_pose_a"            value="$(arg initial_pose_a)"/>
+    <!-- max period to visually displaying scan and path info -->
+    <param name="gui_publish_rate"          value="50.0"/>
+
+    <!-- Parameters for distance sensor -->
+    <remap from="scan"                      to="$(arg scan_topic)"/>
+    <param name="laser_max_range"           value="3.5"/>
+    <param name="laser_max_beams"           value="180"/>
+    <param name="laser_z_hit"               value="0.5"/>
+    <param name="laser_z_short"             value="0.05"/>
+    <param name="laser_z_max"               value="0.05"/>
+    <param name="laser_z_rand"              value="0.5"/>
+    <param name="laser_sigma_hit"           value="0.2"/>
+    <param name="laser_lambda_short"        value="0.1"/>
+    <param name="laser_likelihood_max_dist" value="2.0"/>
+    <param name="laser_model_type"          value="likelihood_field"/>
+
+    <param name="odom_model_type"           value="diff"/>
+    <!-- estimated rotational motion noise during rotational-->
+    <param name="odom_alpha1"               value="0.1"/>
+    <!-- estimated rotational motion noise during translation-->
+    <param name="odom_alpha2"               value="0.1"/>
+    <param name="odom_alpha3"               value="0.1"/>
+    <param name="odom_alpha4"               value="0.1"/>
+    <!-- odometry frame -->
+    <param name="odom_frame_id"             value="odom"/>
+    <param name="base_frame_id"             value="base_footprint"/>
+
+  </node>
+</launch>

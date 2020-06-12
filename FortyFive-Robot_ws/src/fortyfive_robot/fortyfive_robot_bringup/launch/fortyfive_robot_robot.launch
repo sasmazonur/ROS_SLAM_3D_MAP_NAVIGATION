@@ -1,0 +1,14 @@
+<!-- This file bringups the actual Robot -->
+<launch>
+  <arg name="multi_robot_name" default=""/>
+  <arg name="set_lidar_frame_id" default="base_scan"/>
+
+  <include file="$(find fortyfive_robot_bringup)/launch/fortyfive_robot_core.launch">
+    <arg name="multi_robot_name" value="$(arg multi_robot_name)"/>
+  </include>
+  <include file="$(find fortyfive_robot_bringup)/launch/fortyfive_robot_lidar.launch">
+    <arg name="set_frame_id" value="$(arg set_lidar_frame_id)"/>
+  </include>
+
+  <node pkg="fortyfive_robot_bringup" type="fortyfive_robot_diagnostics" name="fortyfive_robot_diagnostics" output="screen"/>
+</launch>
